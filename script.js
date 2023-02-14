@@ -1,30 +1,20 @@
-import { agregarClienteBD, agregarProductoBD, executeQuery} from "./firebase.js"
-// Definicion de clases
-class Ventas {
-    constructor(id_fact) {
-        this.id_fact = id_fact
-    }
-    calcDate() {
-        let date = new Date()
-        return date.getDate()
-    }
-}
+import { agregarClienteBD, agregarProductoBD, executeQuery} from "./firebase.js" //--> Importamos las funciones que definimos con firebase
 //Declaracion de funciones
-const validarVacio = (campo) => {
+const validarVacio = (campo) => { //--> Funcion para validar que los campos del formulario no esten vacios
     if (campo.value != "" && campo.value != null){
         return true
     }else{
         return false
     }
 }
-const validarCorreo = (campo) =>{
+const validarCorreo = (campo) =>{ //--> Funcion para validar que el correo contenga los caracteres que conforman un dominio de correo
     if (campo.value.includes('@') && campo.value.includes('.com' || campo.value.includes('.es') || campo.value.includes('.co'))){
         return true
     }else{
         return false
     }
 }
-const irSeccion = (seccion, add1, add2) =>{
+const irSeccion = (seccion, add1, add2) =>{ //--> funcion para agregar atributos de estilo
     seccion.classList.remove('invisible')
     add1.classList.add('invisible')
     add2.classList.add('invisible')
@@ -36,7 +26,8 @@ const factuForm = document.getElementById('factu-form')
 const goCliente = document.getElementById('link-client')
 const goProduct = document.getElementById('link-product')
 const goFactu = document.getElementById('link-factu')
-clientForm.addEventListener('submit', (e)=>{
+//Llamamos a todos nuestros elementos del DOM
+clientForm.addEventListener('submit', (e)=>{ //Escuchamos cuando el user envie el formulario de registro de cliente, enviamos a la BD y desocupamos los campos
     e.preventDefault()
     if(validarVacio(clientForm['id-cliente']) && validarVacio(clientForm['nom-cliente']) && validarVacio(clientForm['tel-cliente']) && validarVacio(clientForm['correo-cliente'])){
         if(validarCorreo(clientForm['correo-cliente'])){
@@ -52,7 +43,7 @@ clientForm.addEventListener('submit', (e)=>{
         console.log("Campos vacios");
     }
 })
-productForm.addEventListener('submit', (e)=>{
+productForm.addEventListener('submit', (e)=>{ //Escuchamos cuando el user envie el formulario de registro de productos, enviamos a la BD y desocupamos todos los campos
     e.preventDefault()
     if(validarVacio(productForm['id-product']) && validarVacio(productForm['nom-product']) && validarVacio(productForm['price-product']) && validarVacio(productForm['cant-product'])){
         agregarProductoBD(productForm['id-product'].value, productForm['nom-product'].value, productForm['price-product'].value, parseInt(productForm['cant-product'].value))
@@ -64,11 +55,14 @@ productForm.addEventListener('submit', (e)=>{
         console.log("Campos vacios");
     }  
 })
-factuForm.addEventListener('submit', (e)=>{
+factuForm.addEventListener('submit', (e)=>{ //NOTA v1.0.0: Para futuras versiones, agregar una pantalla de impresion para conectar con una impresora y que permita visualizar los datos relevantes de la compra
     e.preventDefault()
-    executeQuery("Clients", factuForm["id-client-factu"].value)
-    executeQuery("Products", factuForm["id-product-factu"].value)
+    executeQuery("Clients", factuForm["id-client-factu"].value, "Cliente")
+    executeQuery("Products", factuForm["id-product-factu"].value, "Producto")
+    //Simula los datos que va a traer de la factura de compra
 })
+
+//Escucha de eventos para cambiar las paginas sin lazy-load
 goCliente.addEventListener('click', () => irSeccion(document.getElementById('client-form-area'),document.getElementById('product-form-area'),document.getElementById('factu-form-area')))
 goProduct.addEventListener('click', () => irSeccion(document.getElementById('product-form-area'),document.getElementById('client-form-area'),document.getElementById('factu-form-area')))
 goFactu.addEventListener('click', () => irSeccion(document.getElementById('factu-form-area'),document.getElementById('client-form-area'),document.getElementById('product-form-area')))

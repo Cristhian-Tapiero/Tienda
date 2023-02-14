@@ -27,25 +27,26 @@ class Factura {
 }
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+//Call the data base with the function getFirestore
 const db = getFirestore()
+//Function to add clients 
 export const agregarClienteBD = (id, nombre, telefono, correo) =>{
-    addDoc(collection(db, 'Clients'), {id, nombre,telefono, correo})
+    addDoc(collection(db, 'Clients'), {id, nombre,telefono, correo}) // --> Aqui se almacenan el nombre del objeto que se va a almacenar en la BD y sus atributos
 }
+//Function to add Products
 export const agregarProductoBD = (id, nombre, precio, cantidad) => {
-    addDoc(collection(db, 'Products'), {id, nombre, precio, cantidad})
+    addDoc(collection(db, 'Products'), {id, nombre, precio, cantidad}) // --> Aqui se definen el nombre del objeto que la BD va a almacenar y sus atributos
 }
-export const crearFactura = (id_client, name_client, id_product, name_product, cant_product, total_compra) =>{
-  addDoc(collection(db, "Facturas"), {id_client, name_client, id_product, name_product, cant_product, total_compra})
-}
-export const executeQuery = (table, value) =>{
+//Function to execute a query, and take the name taking into acount the id
+export const executeQuery = (table, value, what) =>{
   const q1 = query(collection(db,table), where('id', '==', value))
-  onSnapshot(q1, (snapshot) =>{
+  onSnapshot(q1, (snapshot) =>{ // --> Esto trae en tiempo real los valores resultantes de la busqueda en forma de la variable snapshot
     if(!snapshot.empty){
       snapshot.docs.forEach((doc) =>{
         console.log(doc.data().nombre);
       })
     }else{
-      console.log("Cliente no registrado");
+      console.log(`${what} no registrado`);
     }
   })
 }
